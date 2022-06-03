@@ -4,13 +4,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.spy;
 
 import java.util.Arrays;
 import java.util.List;
 import org.craftedsw.tripservicekata.exception.UserNotLoggedInException;
-import org.craftedsw.tripservicekata.user.UserService;
 import org.craftedsw.tripservicekata.user.User;
+import org.craftedsw.tripservicekata.user.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,12 +21,14 @@ public class TripServiceTest {
 
     @Mock
     private UserService userService;
+    @Mock
+    private TripRepository tripRepository;
 
     private TripService testedInstance;
 
     @BeforeEach
     void setUp() {
-        testedInstance = spy(new TripService(userService));
+        testedInstance = new TripService(userService, tripRepository);
     }
 
     @Test
@@ -70,7 +71,7 @@ public class TripServiceTest {
                       .getUserFromSession();
 
         Trip trip = new Trip();
-        doReturn(Arrays.asList(trip)).when(testedInstance).findTripsByUser(user);
+        doReturn(Arrays.asList(trip)).when(tripRepository).findTripsByUser(user);
 
         // When
         List<Trip> tripsByUser = testedInstance.getTripsByUser(user);
