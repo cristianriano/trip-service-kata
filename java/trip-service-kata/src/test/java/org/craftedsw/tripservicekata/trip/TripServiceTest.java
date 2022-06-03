@@ -9,7 +9,7 @@ import static org.mockito.Mockito.spy;
 import java.util.Arrays;
 import java.util.List;
 import org.craftedsw.tripservicekata.exception.UserNotLoggedInException;
-import org.craftedsw.tripservicekata.trip.TripService.UserService;
+import org.craftedsw.tripservicekata.user.UserService;
 import org.craftedsw.tripservicekata.user.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
