@@ -13,14 +13,9 @@ public class TripService {
         final User loggedUser = Optional.ofNullable(getUserFromSession())
                                         .orElseThrow(UserNotLoggedInException::new);
 
-        return areFriends(user, loggedUser) ?
+        return user.isFriendOf(loggedUser) ?
             findTripsByUser(user)
             : Collections.emptyList();
-    }
-
-    private boolean areFriends(User user, User another) {
-        return user.getFriends().stream()
-                   .anyMatch(friend -> friend.equals(another));
     }
 
     protected List<Trip> findTripsByUser(User user) {
