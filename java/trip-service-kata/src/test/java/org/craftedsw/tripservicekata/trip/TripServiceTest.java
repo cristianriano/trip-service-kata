@@ -3,9 +3,11 @@ package org.craftedsw.tripservicekata.trip;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.anyVararg;
 import static org.mockito.Mockito.doReturn;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import org.craftedsw.tripservicekata.exception.UserNotLoggedInException;
 import org.craftedsw.tripservicekata.user.User;
@@ -48,15 +50,15 @@ public class TripServiceTest {
     @Test
     void getTripsByUser_whenUserIsNotInTheListOfFriends_returnsEmptyList() {
         // Given
-        User user = new User();
-        User loggedInUser = new User();
+        var user = new User();
+        var loggedInUser = new User();
         User friend = new User();
         user.addFriend(friend);
         doReturn(loggedInUser).when(userService)
                       .getUserFromSession();
 
         // When
-        List<Trip> tripsByUser = testedInstance.getTripsByUser(user);
+        var tripsByUser = testedInstance.getTripsByUser(user);
 
         // Then
         assertTrue(tripsByUser.isEmpty());
@@ -71,13 +73,13 @@ public class TripServiceTest {
                       .getUserFromSession();
 
         Trip trip = new Trip();
-        doReturn(Arrays.asList(trip)).when(tripRepository).findTripsByUser(user);
+        doReturn(List.of(trip)).when(tripRepository).findTripsByUser(user);
 
         // When
         List<Trip> tripsByUser = testedInstance.getTripsByUser(user);
 
         // Then
-        assertEquals(Arrays.asList(trip), tripsByUser);
+        assertEquals(List.of(trip), tripsByUser);
     }
 
     @Test
