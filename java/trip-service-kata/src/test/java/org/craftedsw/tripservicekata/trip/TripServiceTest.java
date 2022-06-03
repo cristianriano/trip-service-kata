@@ -4,27 +4,37 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.spy;
 
 import java.util.Arrays;
 import java.util.List;
 import org.craftedsw.tripservicekata.exception.UserNotLoggedInException;
+import org.craftedsw.tripservicekata.trip.TripService.UserService;
 import org.craftedsw.tripservicekata.user.User;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Spy;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 public class TripServiceTest {
 
-    @Spy
-    private TripService testedInstance = new TripService();
+    @Mock
+    private UserService userService;
+
+    private TripService testedInstance;
+
+    @BeforeEach
+    void setUp() {
+        testedInstance = spy(new TripService(userService));
+    }
 
     @Test
     void getTripsByUser_whenUserHasNoFriends_returnsEmptyList() {
         // Given
         User user = new User();
-        doReturn(user).when(testedInstance)
+        doReturn(user).when(userService)
                       .getUserFromSession();
 
         // When
@@ -41,7 +51,7 @@ public class TripServiceTest {
         User loggedInUser = new User();
         User friend = new User();
         user.addFriend(friend);
-        doReturn(loggedInUser).when(testedInstance)
+        doReturn(loggedInUser).when(userService)
                       .getUserFromSession();
 
         // When
@@ -56,7 +66,7 @@ public class TripServiceTest {
         // Given
         User user = new User();
         user.addFriend(user);
-        doReturn(user).when(testedInstance)
+        doReturn(user).when(userService)
                       .getUserFromSession();
 
         Trip trip = new Trip();
@@ -73,7 +83,7 @@ public class TripServiceTest {
     void getTripsByUser_whenNoLoggedInUserFound_throwsException() {
         // Given
         User user = new User();
-        doReturn(null).when(testedInstance)
+        doReturn(null).when(userService)
                       .getUserFromSession();
         // When Then
         assertThrows(UserNotLoggedInException.class, () -> testedInstance.getTripsByUser(user));
