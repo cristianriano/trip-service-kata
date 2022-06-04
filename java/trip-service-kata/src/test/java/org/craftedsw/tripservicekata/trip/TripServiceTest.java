@@ -2,6 +2,7 @@ package org.craftedsw.tripservicekata.trip;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -12,36 +13,24 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 public class TripServiceTest {
 
-  private static final User user = new User();
+    private static final User user = new User();
 
-  private final TripService tripService = new TripService();
+    @Spy
+    private TripService tripService;
 
-  @Mock
-  private UserSession userSession;
+    @Test
+    void getTripsByUser_whenUserIsNotLogged_raiseException() {
+        doReturn(null).when(tripService).getLoggedUser();
 
-  @BeforeEach
-  void setUp() {
-    when(UserSession.getInstance()).thenReturn(userSession);
-  }
-
-  @Test
-  void getTripsByUser_whenUserIsNotLoggerIn_raiseException() {
-    when(userSession.getLoggedUser()).thenReturn(null);
-    assertThrows(
-        UserNotLoggedInException.class,
-        () -> tripService.getTripsByUser(user)
-    );
-  }
-
-  @Test
-  void getTripsByUser_whenUserHasNoFriends_returnsEmptyList() {
-
-  }
-
-//  If returns trips of friends only
+        assertThrows(
+            UserNotLoggedInException.class,
+            () -> tripService.getTripsByUser(user)
+        );
+    }
 }
